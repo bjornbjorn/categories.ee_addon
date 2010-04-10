@@ -1,0 +1,33 @@
+﻿h2. What does it do?
+
+Adds an extra tag called *{exp:categories}* that, unlike {exp:channel:categories} can get category information without being tied to a channel.
+
+This way you can let a client edit categories (lists basically) which you use in form dropdown lists, etc.
+
+h3. Parameters
+
+* category_group_id _(required)_ the group id of the category to get
+
+h3. Variables
+
+* {category_name}
+* {category_url_title}
+* {category_image}
+
+h3. Usage example
+
+This example will populate a dropdown list using the categories in group_id 4:
+
+<code>
+{exp:categories category_group_id="4"}
+	<option value="{category_url_title}">{category_name}</option>                    		
+{/exp:categories}	
+</code>
+
+And this will populate a form with some hidden values pointing to category images:
+
+<code>
+{exp:categories category_group_id="4"}
+	<input type='hidden' name='{category_url_title}_logo' value='{category_image}'/>
+{/exp:categories}
+</code>
