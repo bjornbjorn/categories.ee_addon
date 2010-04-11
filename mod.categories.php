@@ -20,10 +20,18 @@ class Categories {
 		$category_group_id = intval($this->_get_param('category_group_id'));
 		if($category_group_id == 0)
 		{
-			return $this->EE->output->show_user_error('general', "{exp:categories} required parameter not specified: category_group_id (can only be a specific id)");	
+			return $this->EE->output->show_user_error('general', "{exp:categories} required parameter missing: category_group_id (can only be a specific id)");	
 		}		
 		
-		$query = $this->EE->db->get_where('categories', array('group_id' => $category_group_id));
+		$url_title = $this->_get_param('url_title');
+				
+		$where_params = array('group_id' => $category_group_id);
+		if($url_title != "")
+		{
+			$where_params['cat_url_title'] = $url_title;
+		}
+		
+		$query = $this->EE->db->get_where('categories', $where_params);
 		
 		$vars = array(); 
 		foreach($query->result() as $row)
@@ -37,8 +45,12 @@ class Categories {
 		$this->return_data = $this->EE->TMPL->parse_variables($this->EE->TMPL->tagdata, $vars);
 		return $this->return_data;		
 	}
-	
 		
+	function _get_category_group_id()
+	{
+		
+	}
+	
 	/**
      * Helper function for getting a parameter
 	 */		 

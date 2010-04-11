@@ -1,6 +1,4 @@
-﻿{exp:categories}
-
-h3. What does it do?
+﻿h3. What does it do?
 
 Adds an extra tag called *{exp:categories}* that, unlike {exp:channel:categories} can get category information without being tied to a channel.
 
@@ -9,6 +7,7 @@ This way you can let a client edit categories (lists basically) which you use in
 h3. Parameters
 
 * category_group_id _(required)_ the group id of the category to get
+* url_title _(optional)_ if specified the tag will only get information about a specific category (with that url_title)
 
 h3. Variables
 
