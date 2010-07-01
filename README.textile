@@ -8,12 +8,14 @@ h3. Parameters
 
 * category_group_id _(required)_ the group id of the category to get
 * url_title _(optional)_ if specified the tag will only get information about a specific category (with that url_title)
+* children _(optional)_ y/n (defaults to y) specify children='n' if you do not want children (only root categories)
 
 h3. Variables
 
 * {category_name}
 * {category_url_title}
 * {category_image}
+* {category_description}
 
 h3. Usage example
 
