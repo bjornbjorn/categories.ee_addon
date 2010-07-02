@@ -22,7 +22,7 @@ h3. Usage example
 
 This is actual code from a WooTheme - it will output a menu as seen in "this demo":http://ee.woothemes.com/demo/dailyedition/
 
-<code>
+
 &lt;ul&gt;
 	{exp:categories category_group_id='1'}
 		&lt;li&gt;&lt;a title=&quot;{category_name}&quot; href=&quot;{path=blog/category}/{category_url_title}&quot; &gt;{category_name}&lt;span class=&quot;nav-description&quot;&gt;{category_description}&lt;/span&gt;&lt;/a&gt;
@@ -38,7 +38,7 @@ This is actual code from a WooTheme - it will output a menu as seen in "this dem
 		&lt;/li&gt;
 	{/exp:categories}
 &lt;/ul&gt;
-</code>
+
 
 This example will populate a dropdown list using the categories in group_id 4:
 
