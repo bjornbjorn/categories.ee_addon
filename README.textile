@@ -8,6 +8,7 @@ h3. Parameters
 
 * category_group_id _(required)_ the group id of the category to get
 * url_title _(optional)_ if specified the tag will only get information about a specific category (with that url_title)
+* style _(optional)_ nested/linear - will default to "nested"
 * children _(optional)_ y/n (defaults to y) specify children='n' if you do not want children (only root categories)
 
 h3. Variables
@@ -19,10 +20,30 @@ h3. Variables
 
 h3. Usage example
 
+This is actual code from a WooTheme - it will output a menu as seen in "this demo":http://ee.woothemes.com/demo/dailyedition/
+
+<code>
+<ul>
+	{exp:categories category_group_id='1'}
+		<li><a title="{category_name}" href="{path=blog/category}/{category_url_title}" >{category_name}<span class="nav-description">{category_description}</span></a>
+		
+		{if has_children}
+			<ul>
+			{children}
+				<li><a title="{child_category_name}" href="{path=blog/category}/{child_category_url_title}">{child_category_name}</a></li>
+			{/children}
+			</ul>
+		{/if}
+								
+		</li>
+	{/exp:categories}
+</ul>
+</code>
+
 This example will populate a dropdown list using the categories in group_id 4:
 
 <code>
-{exp:categories category_group_id="4"}
+{exp:categories category_group_id="4" style="linear"}
 	<option value="{category_url_title}">{category_name}</option>                    		
 {/exp:categories}	
 </code>
@@ -30,7 +51,7 @@ This example will populate a dropdown list using the categories in group_id 4:
 And this will populate a form with some hidden values pointing to category images:
 
 <code>
-{exp:categories category_group_id="4"}
+{exp:categories category_group_id="4" style="linear"}
 	<input type='hidden' name='{category_url_title}_logo' value='{category_image}'/>
 {/exp:categories}
 </code>
