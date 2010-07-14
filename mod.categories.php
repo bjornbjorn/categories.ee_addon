@@ -24,6 +24,7 @@ class Categories {
 			return $this->EE->output->show_user_error('general', "{exp:categories} required parameter missing: category_group_id (can only be a specific id)");	
 		}
 		$children = ($this->_get_param('children', 'y') == 'y');
+		$style = $this->_get_param('style', 'nested');
 				
 		$url_title = $this->_get_param('url_title');
 				
@@ -36,44 +37,55 @@ class Categories {
 		{
 			$where_params['parent_id'] = 0;
 		}
-		
+		$this->EE->db->orderby('cat_order');
 		$query = $this->EE->db->get_where('categories', $where_params);
 		
 		$vars = array();
-		$root_categories = array();
-		$children_categories = array();
-		 
-		foreach($query->result() as $row)
+		
+		if($style == 'nested')
 		{
-			if($row->parent_id==0)
+			$root_categories = array();
+			$children_categories = array();
+			 
+			foreach($query->result() as $row)
 			{
-				$root_categories[] = $this->_get_category_arr($row);
-			}
-			else
-			{
-				if(!isset($children_categories[$row->parent_id]))
+				if($row->parent_id==0)
 				{
-					$children_categories[$row->parent_id] = array();
+					$root_categories[] = $this->_get_category_arr($row);
 				}
-				$children_categories[$row->parent_id][] = $this->_get_category_arr($row, TRUE);
+				else
+				{
+					if(!isset($children_categories[$row->parent_id]))
+					{
+						$children_categories[$row->parent_id] = array();
+					}
+					$children_categories[$row->parent_id][] = $this->_get_category_arr($row, TRUE);
+				}
+			}
+			
+			foreach($root_categories as $cat)
+			{
+				if(isset($children_categories[$cat['category_id']]))	// if has children
+				{
+					$cat['children'] = $children_categories[$cat['category_id']];
+					$cat['has_children'] = TRUE;
+				}
+				else
+				{
+					$cat['children'] = array();
+					$cat['has_children'] = FALSE;
+				}
+				
+				$vars[] = $cat;
+			}
+				
+		} else {
+			foreach($query->result() as $row)
+			{
+				$vars[] = $this->_get_category_arr($row);
 			}
 		}
 		
-		foreach($root_categories as $cat)
-		{
-			if(isset($children_categories[$cat['category_id']]))	// if has children
-			{
-				$cat['children'] = $children_categories[$cat['category_id']];
-				$cat['has_children'] = TRUE;
-			}
-			else
-			{
-				$cat['children'] = array();
-				$cat['has_children'] = FALSE;
-			}
-			
-			$vars[] = $cat;
-		}
 		 							
 		$this->return_data = $this->EE->TMPL->parse_variables($this->EE->TMPL->tagdata, $vars);
 		return $this->return_data;		
