@@ -12,6 +12,8 @@
 class Categories {
 
 	var $return_data;
+
+    private $entry_counts = array();
 	
 	function Categories()
 	{		
@@ -23,9 +25,10 @@ class Categories {
 		{
 			return $this->EE->output->show_user_error('general', "{exp:categories} required parameter missing: category_group_id (can only be a specific id)");	
 		}
-		$children = ($this->_get_param('children', 'y') == 'y');
+		$children = ($this->_get_param('children', 'yes') == 'yes');
+        $fetch_entry_counts = ($this->_get_param('fetch_entry_counts') == 'yes');
 		$style = $this->_get_param('style', 'nested');
-				
+       
 		$url_title = $this->_get_param('url_title');
 				
 		$where_params = array('group_id' => $category_group_id);
@@ -39,7 +42,19 @@ class Categories {
 		}
 		$this->EE->db->order_by('cat_order');
 		$query = $this->EE->db->get_where('categories', $where_params);
-		
+
+        if($fetch_entry_counts)
+        {
+            $this->EE->db->select('cat_id, count(*) as entry_count');
+            $this->EE->db->from('category_posts');
+            $this->EE->db->group_by('entry_id');
+            $q = $this->EE->db->get();
+            foreach($q->result() as $row)
+            {
+                $this->entry_counts[$row->cat_id] = $row->entry_count;
+            }
+        }
+
 		$vars = array();
 		
 		if($style == 'nested')
@@ -104,8 +119,9 @@ class Categories {
 				$prefix.'category_name' => $row->cat_name,
 				$prefix.'category_url_title' => $row->cat_url_title,
 				$prefix.'category_image' => $row->cat_image,
-				$prefix.'category_description' => $row->cat_description,			
-			);	
+				$prefix.'category_description' => $row->cat_description,
+                $prefix.'category_entry_count' => (isset($this->entry_counts[$row->cat_id]) ? $this->entry_counts[$row->cat_id] : 0),
+			);
 	}
 		
 

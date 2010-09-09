@@ -1,4 +1,5 @@
-﻿h3. What does it do?
+﻿
+h3. What does it do?
 
 Adds an extra tag called *{exp:categories}* that, unlike {exp:channel:categories} can get category information without being tied to a channel.
 
@@ -10,6 +11,7 @@ h3. Parameters
 * url_title _(optional)_ if specified the tag will only get information about a specific category (with that url_title)
 * style _(optional)_ nested/linear - will default to "nested"
 * children _(optional)_ y/n (defaults to y) specify children='n' if you do not want children (only root categories)
+* fetch_entry_counts _(optional)_ y/n (defaults to no) - if you enable this an extra query will be run to fetch the entry counts in the categories
 
 h3. Variables
 
@@ -17,12 +19,13 @@ h3. Variables
 * {category_url_title}
 * {category_image}
 * {category_description}
+* {category_entry_count} (remember to set fetch_entry_counts parameter to 'y' to get this)
 
 h3. Usage example
 
 This is actual code from a WooTheme - it will output a menu as seen in "this demo":http://ee.woothemes.com/demo/dailyedition/
 
-
+<code>
 &lt;ul&gt;
 	{exp:categories category_group_id='1'}
 		&lt;li&gt;&lt;a title=&quot;{category_name}&quot; href=&quot;{path=blog/category}/{category_url_title}&quot; &gt;{category_name}&lt;span class=&quot;nav-description&quot;&gt;{category_description}&lt;/span&gt;&lt;/a&gt;
@@ -38,6 +41,16 @@ This is actual code from a WooTheme - it will output a menu as seen in "this dem
 		&lt;/li&gt;
 	{/exp:categories}
 &lt;/ul&gt;
+</code>
+
+
+Get all categories w/entry count:
+
+<code>
+{exp:categories category_group_id="1" style="linear" fetch_entry_counts="y"}
+    <li><a href="{path=blog/{category_url_title}}">{category_name}</a> ({category_entry_count})</li>    
+{/exp:categories}
+</code>	
 
 
 This example will populate a dropdown list using the categories in group_id 4:
