@@ -37,7 +37,7 @@ class Categories {
 		{
 			$where_params['parent_id'] = 0;
 		}
-		$this->EE->db->orderby('cat_order');
+		$this->EE->db->order_by('cat_order');
 		$query = $this->EE->db->get_where('categories', $where_params);
 		
 		$vars = array();
