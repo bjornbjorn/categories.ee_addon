@@ -58,6 +58,11 @@ Get all categories w/entry count:
 </code>	
 </pre>
 
+Will produce a list like this:
+
+!http://ee.bybjorn.com/categories/categories2.png!
+
+
 Get all categories but only entry count of entries w/status 'open':
 
 <pre>
