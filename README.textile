@@ -58,7 +58,7 @@ Get all categories w/entry count:
 </code>	
 </pre>
 
-Will produce a list like this:
+The code above will produce a list like this:
 
 !http://ee.bybjorn.com/categories/categories2.png!
 
