@@ -12,8 +12,6 @@
 class Categories {
 
 	var $return_data;
-
-    private $entry_counts = array();
 	
 	function Categories()
 	{		
@@ -27,6 +25,7 @@ class Categories {
 		}
 		$children = ($this->_get_param('children', 'yes') == 'yes');
         $fetch_entry_counts = ($this->_get_param('fetch_entry_counts') == 'yes');
+        $only_count_status = ($this->_get_param('only_count_status',FALSE));
 		$style = $this->_get_param('style', 'nested');
        
 		$url_title = $this->_get_param('url_title');
@@ -40,20 +39,25 @@ class Categories {
 		{
 			$where_params['parent_id'] = 0;
 		}
+        $select = '*';
 		$this->EE->db->order_by('cat_order');
-		$query = $this->EE->db->get_where('categories', $where_params);
+        $this->EE->db->where($where_params);
+		$this->EE->db->from('categories');
 
         if($fetch_entry_counts)
         {
-            $this->EE->db->select('cat_id, count(*) as entry_count');
-            $this->EE->db->from('category_posts');
-            $this->EE->db->group_by('entry_id');
-            $q = $this->EE->db->get();
-            foreach($q->result() as $row)
+            $select = '*, categories.cat_id AS ucid';
+            $statussql = '';
+            if($only_count_status)
             {
-                $this->entry_counts[$row->cat_id] = $row->entry_count;
+                $statussql = ' AND e.status='.$this->EE->db->escape($only_count_status);
             }
+            $this->EE->db->join('(SELECT cat_id, count(*) as  entry_count FROM '.$this->EE->db->dbprefix('category_posts').' p, '.$this->EE->db->dbprefix('channel_titles').' e WHERE p.entry_id = e.entry_id'.$statussql.' GROUP BY p.cat_id) AS entrycounttbl', 'categories.cat_id = entrycounttbl.cat_id','left');
+            $this->EE->db->group_by('ucid');
         }
+
+        $this->EE->db->select($select);
+        $query = $this->EE->db->get();
 
 		$vars = array();
 		
@@ -120,7 +124,7 @@ class Categories {
 				$prefix.'category_url_title' => $row->cat_url_title,
 				$prefix.'category_image' => $row->cat_image,
 				$prefix.'category_description' => $row->cat_description,
-                $prefix.'category_entry_count' => (isset($this->entry_counts[$row->cat_id]) ? $this->entry_counts[$row->cat_id] : 0),
+                $prefix.'category_entry_count' => (isset($row->entry_count) ? intval($row->entry_count) : 0 ),
 			);
 	}
 		

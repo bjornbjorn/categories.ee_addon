@@ -11,7 +11,8 @@ h3. Parameters
 * url_title _(optional)_ if specified the tag will only get information about a specific category (with that url_title)
 * style _(optional)_ nested/linear - will default to "nested"
 * children _(optional)_ y/n (defaults to y) specify children='n' if you do not want children (only root categories)
-* fetch_entry_counts _(optional)_ y/n (defaults to no) - if you enable this an extra query will be run to fetch the entry counts in the categories
+* fetch_entry_counts _(optional)_ y/n (defaults to no) - if you enable this the database work will be a bit heavier
+* only_count_status _(optional)_ used in conjunction with fetch_entry_counts if you only want to coint entries with a certain status (e.g. open, closed, featured, etc.)
 
 h3. Variables
 
@@ -50,6 +51,16 @@ Get all categories w/entry count:
     <li><a href="{path=blog/{category_url_title}}">{category_name}</a> ({category_entry_count})</li>    
 {/exp:categories}
 </code>	
+</pre>
+
+Get all categories but only entry count of entries w/status 'open':
+
+<pre>
+	<code>
+{exp:categories category_group_id="1" style="linear" fetch_entry_counts="y" only_count_status="open"}
+    <li><a href="{path=blog/{category_url_title}}">{category_name}</a> ({category_entry_count})</li>    
+{/exp:categories}
+	</code>
 </pre>
 
 This example will populate a dropdown list using the categories in group_id 4:
