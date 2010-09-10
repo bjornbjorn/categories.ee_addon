@@ -26,22 +26,27 @@ h3. Usage example
 
 This is actual code from a WooTheme - it will output a menu as seen in "this demo":http://ee.woothemes.com/demo/dailyedition/
 
-&lt;ul&gt;
-	{exp:categories category_group_id='1'}
-		&lt;li&gt;&lt;a title=&quot;{category_name}&quot; href=&quot;{path=blog/category}/{category_url_title}&quot; &gt;{category_name}&lt;span class=&quot;nav-description&quot;&gt;{category_description}&lt;/span&gt;&lt;/a&gt;
+<pre>
+	<code>
 		
-		{if has_children}
-			&lt;ul&gt;
-			{children}
-				&lt;li&gt;&lt;a title=&quot;{child_category_name}&quot; href=&quot;{path=blog/category}/{child_category_url_title}&quot;&gt;{child_category_name}&lt;/a&gt;&lt;/li&gt;
-			{/children}
-			&lt;/ul&gt;
-		{/if}
+<ul>
+{exp:categories category_group_id=’1’}
+<li><a title="{category_name}" href="{path=blog/category}/{category_url_title}" >{category_name}<span class="nav-description">{category_description}</span></a>
 
-		&lt;/li&gt;
-	{/exp:categories}
-&lt;/ul&gt;
+{if has_children}
+<ul>
+{children}
+<li><a title="{child_category_name}" href="{path=blog/category}/{child_category_url_title}">{child_category_name}</a></li>
+{/children}
+</ul>
+{/if}
 
+</li>
+{/exp:categories}
+</ul>
+
+</code>
+</pre>
 
 Get all categories w/entry count:
 
