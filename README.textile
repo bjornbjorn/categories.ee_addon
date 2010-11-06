@@ -1,6 +1,4 @@
-﻿h3. What does it do?
-
-Adds an extra tag called *{exp:categories}* that, unlike {exp:channel:categories} can get category information without being tied to a channel.
+﻿This module adds an extra tag called *{exp:categories}* that, unlike {exp:channel:categories} can get category information without being tied to a channel.
 
 This way you can let a client edit categories (lists basically) which you use in form dropdown lists, etc.
 
@@ -8,7 +6,6 @@ h3. Parameters
 
 * category_group_id _(optional, use either this or channel)_ the group id of the category to get
 * channel _(optional, use either this or category_group_id)_ the name of the channel whose categories to fetch
-
 * url_title _(optional)_ if specified the tag will only get information about a specific category (with that url_title)
 * style _(optional)_ nested/linear - will default to "nested"
 * children _(optional)_ y/n (defaults to y) specify children='n' if you do not want children (only root categories)
@@ -89,9 +86,9 @@ Create a navigation menu for a channel from its associated categories:
 
 <pre><code>
 <ul class="faq-categories">
-    {exp:categories channel='faq' fetch_entry_counts='y'}
-        <li><a href="#">{category_name} <span>({category_entry_count})</span></a></li>
-    {/exp:categories}                                
+	{exp:categories channel='faq' fetch_entry_counts='y' only_count_status='open'}
+	    <li><a href="#">{category_name} <span>({category_entry_count})</span></a></li>
+	{/exp:categories}                                
 </ul>
 </code></pre>
 
