@@ -88,11 +88,11 @@ This example will populate a dropdown list using the categories in group_id 4:
 Create a navigation menu for a channel from its associated categories:
 
 <pre><code>
-	<ul class="faq-categories">
-        {exp:categories channel='faq' fetch_entry_counts='y'}
-            <li><a href="#">{category_name} <span>({category_entry_count})</span></a></li>
-        {/exp:categories}                                
-    </ul>
+<ul class="faq-categories">
+    {exp:categories channel='faq' fetch_entry_counts='y'}
+        <li><a href="#">{category_name} <span>({category_entry_count})</span></a></li>
+    {/exp:categories}                                
+</ul>
 </code></pre>
 
 
