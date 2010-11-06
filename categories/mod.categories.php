@@ -19,18 +19,30 @@ class Categories {
 		
 		$category_group_id = intval($this->_get_param('category_group_id'));
 
-		if($category_group_id == 0)
-		{
-			return $this->EE->output->show_user_error('general', "{exp:categories} required parameter missing: category_group_id (can only be a specific id)");	
-		}
 		$children = ($this->_get_param('children', 'yes') == 'yes');
         $fetch_entry_counts = ($this->_get_param('fetch_entry_counts') == 'yes');
         $only_count_status = ($this->_get_param('only_count_status',FALSE));
 		$style = $this->_get_param('style', 'nested');
        
 		$url_title = $this->_get_param('url_title');
-				
-		$where_params = array('group_id' => $category_group_id);
+
+        $where_params = array();
+        if($category_group_id != 0)
+        {
+		    $where_params['group_id'] = $category_group_id;
+        }
+        else {
+
+            $channel = $this->_get_param('channel');
+            if(!$channel)
+            {
+                return $this->EE->output->show_user_error('general', "{exp:categories} needs either 'category_group_id' (can only be a specific id) or 'channel' (name) as a parameter");
+            }
+
+            $where_params['channel_name'] = $channel;
+            $this->EE->db->join('channels', 'channels.cat_group = categories.group_id');
+        }
+
 		if($url_title != "")
 		{
 			$where_params['cat_url_title'] = $url_title;
@@ -39,7 +51,7 @@ class Categories {
 		{
 			$where_params['parent_id'] = 0;
 		}
-        $select = '*';
+        $select = 'categories.*';
 		$this->EE->db->order_by('cat_order');
         $this->EE->db->where($where_params);
 		$this->EE->db->from('categories');
@@ -104,9 +116,17 @@ class Categories {
 				$vars[] = $this->_get_category_arr($row);
 			}
 		}
-		
+
+        if(count($vars) > 0) 
+        {
+            $this->return_data = $this->EE->TMPL->parse_variables($this->EE->TMPL->tagdata, $vars);
+        }
+        else
+        {
+            $this->return_data = '';
+        }
 		 							
-		$this->return_data = $this->EE->TMPL->parse_variables($this->EE->TMPL->tagdata, $vars);
+
 		return $this->return_data;		
 	}
 	
