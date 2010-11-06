@@ -62,7 +62,13 @@ class Categories {
             $statussql = '';
             if($only_count_status)
             {
-                $statussql = ' AND e.status='.$this->EE->db->escape($only_count_status);
+                $statuses = explode('|', $only_count_status);
+                $statussql = ' AND (e.status='.$this->EE->db->escape($statuses[0]);
+                for($i=1; $i < count($statuses); $i++)
+                {
+                    $statussql .= ' OR e.status='.$this->EE->db->escape($statuses[$i]);
+                }
+                $statussql .= ')';
             }
             $this->EE->db->join('(SELECT cat_id, count(*) as  entry_count FROM '.$this->EE->db->dbprefix('category_posts').' p, '.$this->EE->db->dbprefix('channel_titles').' e WHERE p.entry_id = e.entry_id'.$statussql.' GROUP BY p.cat_id) AS entrycounttbl', 'categories.cat_id = entrycounttbl.cat_id','left');
             $this->EE->db->group_by('ucid');

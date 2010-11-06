@@ -10,7 +10,7 @@ h3. Parameters
 * style _(optional)_ nested/linear - will default to "nested"
 * children _(optional)_ y/n (defaults to y) specify children='n' if you do not want children (only root categories)
 * fetch_entry_counts _(optional)_ y/n (defaults to no) - if you enable this the database work will be a bit heavier
-* only_count_status _(optional)_ used in conjunction with fetch_entry_counts if you only want to coint entries with a certain status (e.g. open, closed, featured, etc.)
+* only_count_status _(optional)_ used in conjunction with fetch_entry_counts if you only want to coint entries with a certain status (e.g. open, closed, featured, etc.) You can use the | separator here (e.g. only_fetch_counts='open|featured')
 
 h3. Variables
 
@@ -82,11 +82,11 @@ This example will populate a dropdown list using the categories in group_id 4:
 </pre>
 
 
-Create a navigation menu for a channel from its associated categories:
+Create a navigation menu for a channel from its associated categories (while counting the entries w/status open OR featured for each category):
 
 <pre><code>
 <ul class="faq-categories">
-	{exp:categories channel='faq' fetch_entry_counts='y' only_count_status='open'}
+	{exp:categories channel='faq' fetch_entry_counts='y' only_count_status='open|featured'}
 	    <li><a href="#">{category_name} <span>({category_entry_count})</span></a></li>
 	{/exp:categories}                                
 </ul>
