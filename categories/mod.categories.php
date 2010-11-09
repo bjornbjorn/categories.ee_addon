@@ -70,13 +70,13 @@ class Categories {
                 }
                 $statussql .= ')';
             }
-            $this->EE->db->join('(SELECT cat_id, count(*) as  entry_count FROM '.$this->EE->db->dbprefix('category_posts').' p, '.$this->EE->db->dbprefix('channel_titles').' e WHERE p.entry_id = e.entry_id'.$statussql.' GROUP BY p.cat_id) AS entrycounttbl', 'categories.cat_id = entrycounttbl.cat_id','left');
+            $this->EE->db->join('(SELECT cat_id AS post_cat_id, count(*) as  entry_count FROM '.$this->EE->db->dbprefix('category_posts').' p, '.$this->EE->db->dbprefix('channel_titles').' e WHERE p.entry_id = e.entry_id'.$statussql.' GROUP BY post_cat_id) AS entrycounttbl', 'categories.cat_id = entrycounttbl.post_cat_id','left');
             $this->EE->db->group_by('ucid');
         }
 
         $this->EE->db->select($select);
         $query = $this->EE->db->get();
-
+        
 		$vars = array();
 		
 		if($style == 'nested')
@@ -144,7 +144,8 @@ class Categories {
 	function _get_category_arr($row, $is_child=FALSE)
 	{
 		$prefix = ($is_child?'child_':'');
-		return array(
+
+        return array(
 				$prefix.'category_id' => $row->cat_id,
 				$prefix.'category_name' => $row->cat_name,
 				$prefix.'category_url_title' => $row->cat_url_title,
