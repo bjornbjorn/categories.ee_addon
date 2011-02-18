@@ -23,6 +23,12 @@ class Categories {
         $fetch_entry_counts = ($this->_get_param('fetch_entry_counts') == 'yes');
         $only_count_status = ($this->_get_param('only_count_status',FALSE));
 		$style = $this->_get_param('style', 'nested');
+        $show_empty = ($this->_get_param('show_empty') != 'no');
+
+        if(!$show_empty)
+        {
+            $fetch_entry_counts = TRUE; // need to fetch them if show_empty = no
+        }
 
         $channel = $this->_get_param('channel');
 		$url_title = $this->_get_param('url_title');
@@ -72,6 +78,11 @@ class Categories {
             }
             $this->EE->db->join('(SELECT cat_id AS post_cat_id, count(*) as  entry_count FROM '.$this->EE->db->dbprefix('category_posts').' p, '.$this->EE->db->dbprefix('channel_titles').' e WHERE p.entry_id = e.entry_id'.$statussql.' GROUP BY post_cat_id) AS entrycounttbl', 'categories.cat_id = entrycounttbl.post_cat_id','left');
             $this->EE->db->group_by('ucid');
+
+            if($show_empty == FALSE)
+            {
+                $this->EE->db->where('entry_count >', '0');
+            }
         }
 
         $this->EE->db->select($select);
