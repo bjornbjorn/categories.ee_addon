@@ -12,16 +12,17 @@
 class Categories {
 
 	var $return_data;
-	
+
 	function Categories()
-	{		
+	{
 		$this->EE =& get_instance(); // Make a local reference to the ExpressionEngine super object
-		
+
 		$category_group_id = intval($this->_get_param('category_group_id'));
 
 		$children = ($this->_get_param('children', 'yes') == 'yes');
         $fetch_entry_counts = ($this->_get_param('fetch_entry_counts') == 'yes');
         $only_count_status = ($this->_get_param('only_count_status',FALSE));
+        $only_count_channelid = ($this->_get_param('only_count_channelid',FALSE));
 		$style = $this->_get_param('style', 'nested');
         $show_empty = ($this->_get_param('show_empty') != 'no');
 
@@ -76,7 +77,20 @@ class Categories {
                 }
                 $statussql .= ')';
             }
-            $this->EE->db->join('(SELECT cat_id AS post_cat_id, count(*) as  entry_count FROM '.$this->EE->db->dbprefix('category_posts').' p, '.$this->EE->db->dbprefix('channel_titles').' e WHERE p.entry_id = e.entry_id'.$statussql.' GROUP BY post_cat_id) AS entrycounttbl', 'categories.cat_id = entrycounttbl.post_cat_id','left');
+
+            $channelidsql = '';
+        	if($only_count_channelid)
+            {
+                $channelids = explode('|', $only_count_channelid);
+                $channelidsql = ' AND (e.channel_id='.$this->EE->db->escape($channelids[0]);
+                for($i=1; $i < count($channelids); $i++)
+                {
+                    $channelidsql .= ' OR e.status='.$this->EE->db->escape($channelids[$i]);
+                }
+               $channelidsql .= ') ';
+            }
+
+            $this->EE->db->join('(SELECT cat_id AS post_cat_id, count(*) as  entry_count FROM '.$this->EE->db->dbprefix('category_posts').' p, '.$this->EE->db->dbprefix('channel_titles').' e WHERE p.entry_id = e.entry_id'.$statussql.$channelidsql.' AND (e.expiration_date = 0 OR e.expiration_date > UNIX_TIMESTAMP())  GROUP BY post_cat_id) AS entrycounttbl', 'categories.cat_id = entrycounttbl.post_cat_id','left');
             $this->EE->db->group_by('ucid');
 
             if($show_empty == FALSE)
@@ -87,14 +101,14 @@ class Categories {
 
         $this->EE->db->select($select);
         $query = $this->EE->db->get();
-        
+
 		$vars = array();
-		
+
 		if($style == 'nested')
 		{
 			$root_categories = array();
 			$children_categories = array();
-			 
+
 			foreach($query->result() as $row)
 			{
 				if($row->parent_id==0)
@@ -110,7 +124,7 @@ class Categories {
 					$children_categories[$row->parent_id][] = $this->_get_category_arr($row, TRUE);
 				}
 			}
-			
+
 			foreach($root_categories as $cat)
 			{
 				if(isset($children_categories[$cat['category_id']]))	// if has children
@@ -123,10 +137,10 @@ class Categories {
 					$cat['children'] = array();
 					$cat['has_children'] = FALSE;
 				}
-				
+
 				$vars[] = $cat;
 			}
-				
+
 		} else {
 			foreach($query->result() as $row)
 			{
@@ -134,7 +148,7 @@ class Categories {
 			}
 		}
 
-        if(count($vars) > 0) 
+        if(count($vars) > 0)
         {
             $this->return_data = $this->EE->TMPL->parse_variables($this->EE->TMPL->tagdata, $vars);
         }
@@ -142,14 +156,14 @@ class Categories {
         {
             $this->return_data = '';
         }
-		 							
 
-		return $this->return_data;		
+
+		return $this->return_data;
 	}
-	
+
 	/**
 	 * Get a template-ready array for categories
-	 * 
+	 *
 	 * @param unknown_type $row
 	 */
 	function _get_category_arr($row, $is_child=FALSE)
@@ -165,16 +179,16 @@ class Categories {
                 $prefix.'category_entry_count' => (isset($row->entry_count) ? intval($row->entry_count) : 0 ),
 			);
 	}
-		
 
-	
+
+
 	/**
      * Helper function for getting a parameter
-	 */		 
+	 */
 	function _get_param($key, $default_value = '')
 	{
 		$val = $this->EE->TMPL->fetch_param($key);
-		
+
 		if($val == '') {
 			return $default_value;
 		}
@@ -183,5 +197,5 @@ class Categories {
 
 }
 
-/* End of file mod.categories.php */ 
-/* Location: ./system/expressionengine/third_party/categories/mod.categories.php */ 
+/* End of file mod.categories.php */
+/* Location: ./system/expressionengine/third_party/categories/mod.categories.php */
