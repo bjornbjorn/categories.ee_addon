@@ -13,7 +13,7 @@
  */
 class Categories_upd {
 		
-	var $version        = '1.2';
+	var $version        = '1.2.1';
 	var $module_name = "Categories";
 	
     function Categories_upd( $switch = TRUE ) 

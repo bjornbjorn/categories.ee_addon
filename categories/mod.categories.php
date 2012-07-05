@@ -16,8 +16,9 @@ class Categories {
 	function Categories()
 	{
 		$this->EE =& get_instance(); // Make a local reference to the ExpressionEngine super object
+        $this->EE->load->library('file_field');
 
-		$category_group_id = intval($this->_get_param('category_group_id'));
+        $category_group_id = intval($this->_get_param('category_group_id'));
 
 		$children = ($this->_get_param('children', 'yes') == 'yes');
         $fetch_entry_counts = ($this->_get_param('fetch_entry_counts') == 'yes');
@@ -236,7 +237,7 @@ class Categories {
 				$prefix.'category_id' => $row->cat_id,
 				$prefix.'category_name' => $row->cat_name,
 				$prefix.'category_url_title' => $row->cat_url_title,
-				$prefix.'category_image' => $row->cat_image,
+				$prefix.'category_image' => $this->EE->file_field->parse_string($row->cat_image),
 				$prefix.'category_description' => $row->cat_description,
                 $prefix.'category_entry_count' => (isset($row->entry_count) ? intval($row->entry_count) : 0 ),
 			);
