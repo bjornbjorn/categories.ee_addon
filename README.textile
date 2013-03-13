@@ -2,4 +2,4 @@
 
 This way you can let a client edit categories (lists basically) which you use in form dropdown lists, etc.
 
-"Click here for full documentation":http://www.addonbakery.com/docs/expressionengine/categories.html
+"Click here for full documentation":http://wedoaddons.com/addon/categories/documentation
