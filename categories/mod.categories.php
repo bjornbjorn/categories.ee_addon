@@ -33,6 +33,7 @@ class Categories {
 		$padding = $this->_get_param('padding', '<ul><li>');
         $padding_after = $this->_get_param('padding_after', '</li></ul>');
 
+        $limit = $this->_get_param('limit');
         $channel = $this->_get_param('channel');
 		$url_title = $this->_get_param('url_title');
         $category_id = $this->_get_param('category_id');
@@ -68,6 +69,11 @@ class Categories {
         $this->EE->db->where($where_params);
 		$this->EE->db->from('categories');
 
+    if($limit != "")
+    {
+      $this->EE->db->limit($limit);
+    }
+
         if($fetch_entry_counts)
         {
             $select = '*, categories.cat_id AS ucid';
@@ -89,7 +95,7 @@ class Categories {
                 $where_sql = ', '.$this->EE->db->dbprefix('channels').' ec WHERE ec.channel_name='.$this->EE->db->escape($channel).' AND ec.channel_id=e.channel_id AND';
             }
             $this->EE->db->join('(SELECT cat_id AS post_cat_id, count(*) as  entry_count FROM '.$this->EE->db->dbprefix('category_posts').' p, '.$this->EE->db->dbprefix('channel_titles').' e '.$where_sql.' p.entry_id = e.entry_id'.$statussql.' GROUP BY post_cat_id) AS entrycounttbl', 'categories.cat_id = entrycounttbl.post_cat_id','left');
-                        
+
             $this->EE->db->group_by('ucid');
             if($show_empty == FALSE)
             {
